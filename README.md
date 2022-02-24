@@ -1,24 +1,23 @@
-# next-app
+# P7_Todorovic_Lazar : Groupomania project
 
-## Project setup
-```
+Projet 7 du parcours Web d'Openclassrooms .
+Création d'un réseau social d'entreprise 'Groupomania' .
+Création du backend et du frontend de l'application en utilisant le framework Vue.js.
+
+///////////////////
+
+# Installation
+
+# FrontEnd
+
+cd frontend
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# BackEnd
 
-### Lints and fixes files
-```
-npm run lint
-```
+cd backend
+npm install
+nodemon server
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+//////////////////
