@@ -66,9 +66,9 @@
       <MDBBtn color="dark" floating class="mx-1">
         <MDBIcon iconStyle="fab" icon="github" />
       </MDBBtn>
-      <p class="small fw-bold mt-2 pt-1 mb-0">
+      <p class="small fw-bold mt-2 pt-1 mb-0" v-on:click:href="SignIn()">
         You already have an account?
-        <a href="#!" class="link-danger">SIGN IN</a>
+        <MDBBtn color="danger" @click="SignIn()" rounded>Sign In</MDBBtn>
       </p>
     </div>
   </form>
@@ -84,6 +84,11 @@ import {
 } from "mdb-vue-ui-kit";
 import { ref } from "vue";
 export default {
+  methods: {
+    SignIn() {
+      this.$router.push("/signin");
+    },
+  },
   components: {
     MDBRow,
     MDBCol,
