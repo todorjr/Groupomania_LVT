@@ -23,4 +23,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+footer {
+  margin: 20px;
+}
+</style>

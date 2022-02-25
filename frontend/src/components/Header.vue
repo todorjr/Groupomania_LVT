@@ -1,12 +1,14 @@
 <template>
-  <img class="logo" alt="Logo" src="../assets/icon.svg" />
-  <h1>{{ message }}</h1>
-  <p class="message">{{ phrase }}<br />{{ teamName }}</p>
-  <img
-    alt="logo and name of company"
-    class="logoname"
-    src="@/assets/icon-left-font.png"
-  />
+  <div class="header">
+    <img class="logo" alt="Logo" src="../assets/icon.svg" />
+    <h1>{{ message }}</h1>
+    <p class="message">{{ phrase }}<br />{{ teamName }}</p>
+    <img
+      alt="logo and name of company"
+      class="logoname"
+      src="@/assets/icon-left-font.png"
+    />
+  </div>
 </template>
 
 <script>
@@ -34,8 +36,8 @@ h1 {
   font-family: "Abel", sans-serif;
 }
 .logo {
-  width: 8%;
-  height: 7%;
+  width: 7%;
+  height: 3%;
   animation: rotation 4s infinite linear;
 }
 @keyframes rotation {

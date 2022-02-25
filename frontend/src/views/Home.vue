@@ -18,3 +18,8 @@ export default {
   },
 };
 </script>
+<style>
+.home h1 {
+  margin-top: 10px;
+}
+</style>
