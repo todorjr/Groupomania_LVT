@@ -2,7 +2,7 @@
   <h1>Hi there ! 👋🏻 <br />Nice to see you again ! 🌐</h1>
 
   <!-- Material form login -->
-  <form class="signin">
+  <form class="signin shadow-5">
     <p class="h4 text-center mb-4">Sign In</p>
     <div class="grey-text">
       <MDBInput label="Your email" icon="envelope" type="email" />
