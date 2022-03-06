@@ -5,35 +5,29 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
 const fs = require("fs");
 
-exports.signUp = (req, res, next) => {
+exports.signup = (req, res, next) => {
   let sql = `SELECT * FROM 'users' WHERE email=?`;
   dbConnect.execute(sql, [req.body.email], function (err, result) {
-    let user = new User();
-    if (!user) {
+    console.log(result);
+    if (!result) {
       bcrypt
         .hash(req.body.password, 10)
         .then((hash) => {
-          const image = `${req.protocol}://${req.get("host")}/images/pp.png`;
           const user = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
             password: hash,
-            imageUrl: image,
           };
-          let sql = `INSERT INTO 'users' (firstName, lastName, email, password, pp) VALUES (?,?,?,?,?)`;
+          let sql = `INSERT INTO users (firstName, lastName, email, password) VALUES (?,?,?,?);`;
           dbConnect.execute(
             sql,
-            [
-              user.firstName,
-              user.lastName,
-              user.email,
-              user.password,
-              user.image,
-            ],
+            [user.firstName, user.lastName, user.email, user.password],
             function (err, result) {
               if (err) throw err;
-              res.status(201).json({ message: `User ${user.prenom} added !` });
+              res
+                .status(201)
+                .json({ message: `User ${user.firstName} added !` });
             }
           );
         })
@@ -44,35 +38,39 @@ exports.signUp = (req, res, next) => {
   });
 };
 
-exports.logIn = (req, res, next) => {
-  let sql = `SELECT * FROM 'users' WHERE email=?`;
-
-  dbConnect.execute(sql, [req.body.email], function (err, result) {
-    let user = new User();
-    if (!user) return res.status(401).json({ error: "Email is incorrect..." });
-    bcrypt
-      .compare(req.body.password, user.password)
-      .then((valid) => {
-        if (!valid) {
-          return res.status(401).json({ error: "Password is inccorect !" });
+exports.login = (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new Error("You have to fill all fields !");
+    }
+    dbConnect.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email],
+      async (error, result) => {
+        if (result.length == 0) {
+          throw new Error("wrong email adress");
         }
-        console.log("User connected!");
+        if (!bcrypt.compare(password, result[0].password)) {
+          throw new Error("wrong password");
+        }
+        const id = result[0].id;
         res.status(200).json({
-          userId: user.id,
-          token: jwt.sign({ userId: user.id }, process.env.SECRET_TOKEN_KEY, {
+          id: id,
+          token: jwt.sign({ id: id }, "RANDOM_TOKEN_SECRET", {
             expiresIn: "24h",
           }),
         });
-      })
-      .catch((error) =>
-        res.status(500).json({ message: "Error with  authentification" })
-      );
-  });
+      }
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 exports.getOneUser = (req, res, next) => {
   let sql = `SELECT * FROM user WHERE user.id=${req.body.userId};`;
-  dbConnect.execute(sql, function (err, result) {
+  dbConnect.query(sql, function (err, result) {
     if (err) res.status(400).json({ err });
     res.status(200).json(result);
   });
@@ -178,9 +176,37 @@ exports.modifyProfilPicture = (req, res, next) => {
     });
   }
 };
-exports.deleteUser = (req, res) => {
-  userModel.deleteUser(req.params.id, (err, User) => {
-    if (err) res.send(err);
-    res.json({ success: true, message: "User deleted!" });
-  });
+
+exports.deleteUser = (req, res, next) => {
+  const userToDeleteId = req.params.id;
+  const userSelfId = res.locals.userId;
+  if (userToDeleteId !== userSelfId) {
+    connectDB.query(
+      "DELETE FROM user WHERE id=?",
+      [userToDeleteId],
+      async (error, result) => {
+        if (error) {
+          throw new Error(error);
+        } else if (result.affectedRows < 1) {
+          throw new Error("this user does not exist");
+        } else {
+          res.send("user deleted");
+        }
+      }
+    );
+  } else {
+    connectDB.query(
+      "DELETE FROM user WHERE id=?",
+      [userSelfId],
+      async (error, result) => {
+        if (error) {
+          throw new Error(error);
+        } else if (result.affectedRows < 1) {
+          throw new Error("this user does not exist");
+        } else {
+          res.send("user deleted");
+        }
+      }
+    );
+  }
 };

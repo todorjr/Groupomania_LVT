@@ -1,7 +1,7 @@
 <template>
   <div class="about">
-    <div class="card img-fluid hover-shadow" style="width: 18rem">
-      <img src="@/assets/icon-left-font.png" class="card-img-top" alt="grp" />
+    <div class="cardAbout img-fluid hover-shadow" style="width: 18rem">
+      <img src="@/assets/icon-above-font.svg" class="card-img-top" alt="grp" />
       <div class="card-body">
         <p class="card-text">
           {{ aboutUs }}
@@ -32,10 +32,10 @@ export default {
 </script>
 
 <style>
-.card {
+.cardAbout {
   margin: auto;
   width: 60%;
-  border: 1px solid red;
+  border-radius: 25px;
   padding: 10px;
 }
 </style>
