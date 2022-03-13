@@ -1,6 +1,6 @@
 <template>
   <h1>Welcome ! <br />Feel free to connect to our social network !</h1>
-  <form class="shadow-5" method="post">
+  <form class="shadow-5" method="post" type="submit">
     <!-- 2 column grid layout with text inputs for the first and last names -->
     <MDBRow class="mb-4">
       <MDBCol>
@@ -9,7 +9,7 @@
           label="First name"
           required
           id="firstName"
-          v-model="user.firstName"
+          v-model="userInfos.firstName"
           value="firstName"
         />
       </MDBCol>
@@ -19,26 +19,38 @@
           label="Last name"
           required
           id="lastName"
-          v-model="user.lastName"
+          v-model="userInfos.lastName"
         />
       </MDBCol>
     </MDBRow>
+    <!--Description  input-->
+    <MDBCol>
+      <MDBInput
+        type="text"
+        label="Description "
+        required
+        id="description"
+        v-model="userInfos.description"
+      />
+    </MDBCol>
+    <br />
     <!-- Email input -->
     <MDBInput
       type="email"
       label="Email address"
       required
       id="email"
-      v-model="user.email"
+      v-model="userInfos.email"
       wrapperClass="mb-4"
     />
+
     <!-- Password input -->
     <MDBInput
       type="password"
       label="Password"
       required
       id="password"
-      v-model="user.password"
+      v-model="userInfos.password"
       wrapperClass="mb-4"
     />
 
@@ -95,6 +107,7 @@
       </p>
     </div>
   </form>
+
   <Footer />
 </template>
 <script>
@@ -124,29 +137,38 @@ export default {
 
   data() {
     return {
-      user: {
+      userInfos: {
         firstName: null,
         lastName: null,
         password: null,
         email: null,
+        description: null,
       },
       confirmPassword: null,
     };
   },
+  props: {
+    mode: {
+      type: String,
+      default: "connexion",
+    },
+  },
   methods: {
     SignUp() {
       const userData = {
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
-        password: this.user.password,
-        email: this.user.email,
+        firstName: this.userInfos.firstName,
+        lastName: this.userInfos.lastName,
+        password: this.userInfos.password,
+        email: this.userInfos.email,
+        description: this.userInfos.description,
       };
+
       console.log(userData);
       const regexEmail =
         /^[a-z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/g;
       if (
-        this.user.password === this.confirmPassword &&
-        regexEmail.test(this.user.email)
+        this.userInfos.password === this.confirmPassword &&
+        regexEmail.test(this.userInfos.email)
       ) {
         axios({
           method: "POST",
@@ -158,11 +180,12 @@ export default {
         })
           .then((result) => {
             console.log(result);
-            this.$router.push("/profil");
+            this.$router.push("/signin");
           })
           .catch((error) => console.log(error));
       }
     },
+
     GoToSignIn() {
       this.$router.push("/signin");
     },

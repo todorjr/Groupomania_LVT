@@ -1,17 +1,16 @@
 <template>
   <ProfilPage />
-  <Comment />
+  <Footer />
 </template>
 
 <script>
 import ProfilPage from "@/components/ProfilPage.vue";
-import Comment from "@/components/Comment.vue";
-
+import Footer from "@/components/Footer.vue";
 export default {
   name: "Profil",
   components: {
     ProfilPage,
-    Comment,
+    Footer,
   },
 };
 </script>

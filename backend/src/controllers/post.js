@@ -1,50 +1,45 @@
 const dbConnect = require("../../config/db");
+const Post = require("../models/post");
 const fs = require("fs");
 
 // DEFINE USER INPUT
 exports.createPost = (req, res, next) => {
-  const image = req.file
-    ? `${req.protocol}://${req.get("host")}/images/post/${req.file.filename}`
-    : "";
-  const textSend = req.body.text ? req.body.text : " ";
-  const post = {
-    text: textSend,
-    imageUrl: image,
-    likePost: 0,
-    date: new Date().toLocaleString("af-ZA", { timeZone: "Europe/Paris" }),
-    idCreator: req.body.userId,
-  };
-  // SEND THE REQUEST WITH MULTER AND DEFAULT VALUES
-  let sql = `INSERT INTO posts (text, imageUrl, date, idCreator) VALUES (?,?,?,?);`;
-  dbConnect.execute(
-    sql,
-    [dbConnect.text, dbConnect.imageUrl, dbConnect.date, dbConnect.idCreator],
-    function (err, result) {
-      if (err) throw err;
-      res.status(201).json({ message: `Status added !` });
+  const idUser = req.body.id;
+  const text = req.body.text;
+  let image;
+  if (req.file == null) {
+    image = null;
+  } else {
+    image = `/images/${req.file.filename}`;
+  }
+
+  const datePost = new Date();
+  dbConnect.query(
+    "INSERT INTO posts SET ?",
+    { text: text, date: datePost, idUser: idUser, image: image },
+    (error, result) => {
+      if (error) {
+        throw new Error(error);
+      } else {
+        res.send(result);
+      }
     }
   );
 };
 
 exports.deletePost = (req, res, next) => {
-  let sql = `SELECT * FROM posts WHERE id = ?`;
-  dbConnect.execute(sql, [req.params.id], function (err, result) {
-    if (err) res.status(400).json({ err });
-    if (!result[0])
-      res.status(400).json({ message: "We can not find any ID in table..." });
-    else {
-      if (result[0].authorId == req.body.userId || req.body.admin == true) {
-        // IF POST IS AN IMAGE,DELETE THAT IMAGE FROM FOLDER
-        if (result[0].imageUrl != "") {
-          const name = result[0].imageUrl.split("/images/post/")[1];
-          fs.unlink(`images/post/${name}`, () => {
-            if (err) console.log(err);
-            else console.log("Image deleted  !");
-          });
-        }
+  const postId = req.params.id;
+  dbConnect.query(
+    "DELETE FROM posts WHERE id=?",
+    [postId],
+    async (error, result) => {
+      if (error) {
+        throw new Error(error);
+      } else {
+        res.send("post deleted");
       }
     }
-  });
+  );
 };
 
 exports.modifyPost = (req, res, next) => {
@@ -81,20 +76,21 @@ exports.modifyPost = (req, res, next) => {
     });
   }
 };
+// "SELECT posts.id AS postId, posts.* FROM posts JOIN users WHERE users.id=posts.idUser"
 
 // ALL POSTS ON PAGE
 exports.getAllPosts = (req, res, next) => {
   let sql =
-    "SELECT * FROM posts JOIN users WHERE user.id=idCreator ORDER BY date DESC LIMIT 50;";
+    "SELECT posts.id as postId, posts.*, users.* FROM posts INNER JOIN users ON users.id=posts.idUser";
   dbConnect.execute(sql, function (err, result) {
     if (err) res.status(400).json({ err });
     res.status(200).json(result);
   });
 };
 
-//GET ONE POST
+// GET ONE POST
 exports.getOnePost = (req, res, next) => {
-  let sql = `SELECT * FROM posts JOIN users WHERE user.id=idCreator AND idCreator=? ORDER BY date DESC;`;
+  let sql = `SELECT * FROM posts JOIN users WHERE users.id=idCreator AND idCreator=? ORDER BY date DESC;`;
   dbConnect.execute(sql, [req.body.id], function (err, result) {
     if (err) res.status(400).json({ err });
     res.status(200).json(result);

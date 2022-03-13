@@ -5,10 +5,10 @@ export default new Vuex.Store({
   state: {
     user: {
       userId: "",
-      firstname: "NC",
-      lastname: "NC",
-      email: "NC",
-      description: "NC",
+      firstName: "",
+      lastName: "",
+      email: "",
+      description: "",
       admin: false,
     },
     changeOption: "",
@@ -17,11 +17,11 @@ export default new Vuex.Store({
   mutations: {
     USER_INFOS(
       state,
-      [userId, firstname, lastname, email, description, admin]
+      [userId, firstName, lastName, email, description, admin]
     ) {
       state.user.userId = userId;
-      (state.user.firstname = firstname),
-        (state.user.lastname = lastname),
+      (state.user.firstName = firstName),
+        (state.user.lastName = lastName),
         (state.user.email = email),
         (state.user.description = description),
         (state.user.admin = admin);
@@ -33,14 +33,16 @@ export default new Vuex.Store({
   },
 
   actions: {
-    me(valeur) {
+    me(value) {
       axios
-        .get("/api/user/me")
+        .get("http://localhost:3000/user/me", {
+          headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
         .then((response) => {
-          valeur.commit("USER_INFOS", [
+          value.commit("USER_INFOS", [
             response.data[0].id,
-            response.data[0].firstname,
-            response.data[0].lastname,
+            response.data[0].firstName,
+            response.data[0].lastName,
             response.data[0].email,
             response.data[0].description,
             response.data[0].admin,

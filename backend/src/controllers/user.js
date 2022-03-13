@@ -2,7 +2,7 @@ const User = require("../models/User");
 const dbConnect = require("../../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv").config();
+// const dotenv = require("dotenv").config();
 const fs = require("fs");
 
 exports.signup = (req, res, next) => {
@@ -18,11 +18,18 @@ exports.signup = (req, res, next) => {
             lastName: req.body.lastName,
             email: req.body.email,
             password: hash,
+            description: req.body.description,
           };
-          let sql = `INSERT INTO users (firstName, lastName, email, password) VALUES (?,?,?,?);`;
+          let sql = `INSERT INTO users (firstName, lastName, email, password,description) VALUES (?,?,?,?,?);`;
           dbConnect.execute(
             sql,
-            [user.firstName, user.lastName, user.email, user.password],
+            [
+              user.firstName,
+              user.lastName,
+              user.email,
+              user.password,
+              user.description,
+            ],
             function (err, result) {
               if (err) throw err;
               res
@@ -54,12 +61,23 @@ exports.login = (req, res, next) => {
         if (!bcrypt.compare(password, result[0].password)) {
           throw new Error("wrong password");
         }
+        console.log(result);
+
         const id = result[0].id;
+        const firstName = result[0].firstName;
+        const lastName = result[0].lastName;
+
         res.status(200).json({
           id: id,
-          token: jwt.sign({ id: id }, "RANDOM_TOKEN_SECRET", {
-            expiresIn: "24h",
-          }),
+          firstName: firstName,
+          lastName: lastName,
+          token: jwt.sign(
+            { id: id, firstName: firstName, lastName: lastName },
+            "RANDOM_TOKEN_SECRET",
+            {
+              expiresIn: "24h",
+            }
+          ),
         });
       }
     );
@@ -69,7 +87,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.getOneUser = (req, res, next) => {
-  let sql = `SELECT * FROM user WHERE user.id=${req.body.userId};`;
+  let sql = `SELECT * FROM users WHERE users.id=${req.body.userId};`;
   dbConnect.query(sql, function (err, result) {
     if (err) res.status(400).json({ err });
     res.status(200).json(result);
@@ -121,33 +139,71 @@ exports.modifyPassword = (req, res, next) => {
     });
   }
 };
+exports.me = (req, res, next) => {
+  try {
+    const id = res.locals.userId;
+    dbConnect.query(
+      "SELECT * FROM users WHERE id = ?",
+      [id],
+      (error, result) => {
+        if (error) {
+          throw new Error(error);
+        } else {
+          console.log(result);
 
-exports.modifyAccount = (req, res, next) => {
-  if (req.body.nom != "") {
-    let sql = `UPDATE users
-              SET firstName= ?
-              WHERE id = ?`;
-    dbConnect.execute(
-      sql,
-      [req.body.firstName, req.params.id],
-      function (err, result) {
-        if (err) throw err;
+          res.send(result);
+        }
       }
     );
+  } catch {
+    throw new Error("user not allowed");
   }
-  if (req.body.lastName != "") {
-    let sql = `UPDATE users
-              SET lastName= ?
-              WHERE id = ?;`;
-    dbConnect.execute(
-      sql,
-      [req.body.lastName, req.params.id],
-      function (err, result) {
-        if (err) throw err;
+};
+
+// exports.modifyAccount = (req, res, next) => {
+//   if (req.body.nom != "") {
+//     let sql = `UPDATE users
+//               SET firstName= ?
+//               WHERE id = ?`;
+//     dbConnect.execute(
+//       sql,
+//       [req.body.firstName, req.params.id],
+//       function (err, result) {
+//         if (err) throw err;
+//       }
+//     );
+//   }
+//   if (req.body.lastName != "") {
+//     let sql = `UPDATE users
+//               SET lastName= ?
+//               WHERE id = ?;`;
+//     dbConnect.execute(
+//       sql,
+//       [req.body.lastName, req.params.id],
+//       function (err, result) {
+//         if (err) throw err;
+//       }
+//     );
+//   }
+//   res.status(200).json({ message: "Information user update" });
+// };
+
+exports.updateProfilDescription = (req, res, next) => {
+  const id = res.locals.userId;
+  const newDescription = req.body.description;
+  dbConnect.query(
+    "UPDATE users SET description=? WHERE id=?",
+    [newDescription, id],
+    async (error, result) => {
+      if (error) {
+        throw new Error(error);
+      } else if (result.affectedRows < 1) {
+        throw new NotFoundError("this user does not exist");
+      } else {
+        res.send("user updated");
       }
-    );
-  }
-  res.status(200).json({ message: "Information user update" });
+    }
+  );
 };
 
 exports.modifyProfilPicture = (req, res, next) => {
@@ -176,37 +232,18 @@ exports.modifyProfilPicture = (req, res, next) => {
     });
   }
 };
-
 exports.deleteUser = (req, res, next) => {
   const userToDeleteId = req.params.id;
-  const userSelfId = res.locals.userId;
-  if (userToDeleteId !== userSelfId) {
-    connectDB.query(
-      "DELETE FROM user WHERE id=?",
-      [userToDeleteId],
-      async (error, result) => {
-        if (error) {
-          throw new Error(error);
-        } else if (result.affectedRows < 1) {
-          throw new Error("this user does not exist");
-        } else {
-          res.send("user deleted");
-        }
+
+  dbConnect.query(
+    "DELETE FROM users WHERE id=?",
+    [userToDeleteId],
+    async (error, result) => {
+      if (error) {
+        throw new Error(error);
+      } else {
+        res.send("user deleted");
       }
-    );
-  } else {
-    connectDB.query(
-      "DELETE FROM user WHERE id=?",
-      [userSelfId],
-      async (error, result) => {
-        if (error) {
-          throw new Error(error);
-        } else if (result.affectedRows < 1) {
-          throw new Error("this user does not exist");
-        } else {
-          res.send("user deleted");
-        }
-      }
-    );
-  }
+    }
+  );
 };

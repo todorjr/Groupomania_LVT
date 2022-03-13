@@ -12,6 +12,20 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "MainPage",
+  data() {
+    return {
+      groupName: "Groupomania",
+    };
+  },
+
+  created() {
+    this.$store.dispatch("me");
+  },
+};
+</script>
 <style>
 body {
   margin: 0;

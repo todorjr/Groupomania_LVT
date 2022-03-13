@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <Header />
+
     <Footer />
   </div>
 </template>
@@ -15,6 +16,12 @@ export default {
   components: {
     Header,
     Footer,
+  },
+  props: {
+    mode: {
+      type: String,
+      default: "connexion",
+    },
   },
 };
 </script>

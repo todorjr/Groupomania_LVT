@@ -8,12 +8,12 @@ const password = require("../middleware/password");
 
 router.post("/signup", userCtrl.signup);
 router.post("/login", userCtrl.login);
-router.get("/:id", auth, userCtrl.getOneUser);
+router.get("/one", auth, userCtrl.getOneUser);
 router.get("/", auth, userCtrl.getAllUsers);
-
-router.delete("/:id", auth, userCtrl.deleteUser);
+router.delete("/delete/:id", auth, userCtrl.deleteUser);
 router.put("/:id", auth, password, userCtrl.modifyPassword);
 router.put("/:id", auth, multer, userCtrl.modifyProfilPicture);
-router.put("/:id", auth, userCtrl.modifyAccount);
+router.put("/:id", auth, userCtrl.updateProfilDescription);
+router.get("/me", auth, userCtrl.me);
 
 module.exports = router;

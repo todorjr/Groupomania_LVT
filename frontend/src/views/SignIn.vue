@@ -1,7 +1,6 @@
 <template>
+  <!--SignIn -->
   <h1>Hi there ! 👋🏻 <br />Nice to see you again !</h1>
-
-  <!-- Material form login -->
 
   <form class="signin shadow-5" method="post">
     <p class="h4 text-center mb-4">Sign In</p>
@@ -34,8 +33,8 @@
 
 <script>
 import axios from "axios";
-import Footer from "@/components/Footer.vue";
 
+import Footer from "@/components/Footer.vue";
 import { MDBInput, MDBBtn } from "mdb-vue-ui-kit";
 
 export default {
@@ -45,6 +44,7 @@ export default {
     MDBBtn,
     Footer,
   },
+
   data() {
     return {
       user: {
@@ -60,8 +60,8 @@ export default {
           .post("http://localhost:3000/user/login", this.user)
           .then((result) => {
             console.log(result);
-            this.$router.push("/profil");
-            localStorage.setItem("userToken", JSON.stringify(this.user));
+            localStorage.setItem("token", result.data.token);
+            this.$router.push("/allposts");
           })
           .catch((error) => console.log(error));
       }
