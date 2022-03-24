@@ -1,7 +1,20 @@
 <template>
-  <div class="about">
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> |
+    <router-link to="/signup">Connect</router-link>
+    <router-link to="/signin"></router-link>
+    <router-link to="/profil"></router-link>
+    <router-link to="/allposts"></router-link>
+  </div>
+  <div class="d-sm-md-flex flex-sm-md-column align-items-center">
     <div class="cardAbout img-fluid hover-shadow" style="width: 18rem">
-      <img src="@/assets/icon-above-font.svg" class="card-img-top" alt="grp" />
+      <img
+        src="@/assets/icon-above-font.svg"
+        class="card-img-top"
+        alt="grp"
+        @click="GoToHome()"
+      />
       <div class="card-body">
         <p class="card-text">
           {{ aboutUs }}
@@ -28,6 +41,11 @@ export default {
           uniquement 300 il y a 3 ans.`,
     };
   },
+  methods: {
+    GoToHome() {
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
@@ -37,5 +55,6 @@ export default {
   width: 60%;
   border-radius: 25px;
   padding: 10px;
+  cursor: pointer;
 }
 </style>

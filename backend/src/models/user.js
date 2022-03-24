@@ -4,6 +4,7 @@ const User = function (user) {
   this.lastName = user.lastName;
   this.email = user.email;
   this.password = user.password;
+  this.description = user.description;
 };
 
 module.export = User;

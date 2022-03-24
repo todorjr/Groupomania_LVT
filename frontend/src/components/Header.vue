@@ -1,5 +1,13 @@
 <template>
-  <div class="header">
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> |
+    <router-link to="/signup">Connect</router-link>
+    <router-link to="/signin"></router-link>
+    <router-link to="/profil"></router-link>
+    <router-link to="/allposts"></router-link>
+  </div>
+  <div class="header d-flex flex-column align-items-center">
     <img class="logo" alt="Logo" src="../assets/icon.svg" />
     <h1>{{ message }}</h1>
     <p class="message">{{ phrase }}<br />{{ teamName }}</p>
@@ -7,6 +15,8 @@
       alt="logo and name of company"
       class="logoname"
       src="@/assets/icon-left-font.png"
+      style="cursor: pointer"
+      @click="GoToProfil()"
     />
   </div>
 </template>
@@ -20,6 +30,11 @@ export default {
       phrase: ` We are dedicated to have good team with happy and satisifed cooperators.Thank you for being with us! `,
       teamName: `Team "Groupomania"`,
     };
+  },
+  methods: {
+    GoToProfil() {
+      this.$router.push("/profil");
+    },
   },
 };
 </script>

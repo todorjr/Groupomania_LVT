@@ -1,4 +1,12 @@
 <template>
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> |
+    <router-link to="/signup">Connect</router-link>
+    <router-link to="/signin"></router-link>
+    <router-link to="/profil"></router-link>
+    <router-link to="/allposts"></router-link>
+  </div>
   <!--SignIn -->
   <h1>Hi there ! 👋🏻 <br />Nice to see you again !</h1>
 
@@ -55,7 +63,7 @@ export default {
   },
   methods: {
     LogIn() {
-      if (this.user.email !== null) {
+      if (this.user.email !== null && this.user.password !== null) {
         axios
           .post("http://localhost:3000/user/login", this.user)
           .then((result) => {
@@ -64,6 +72,10 @@ export default {
             this.$router.push("/allposts");
           })
           .catch((error) => console.log(error));
+      } else {
+        alert(
+          "Please enter all necessary information to be able to create a new account..."
+        );
       }
     },
   },

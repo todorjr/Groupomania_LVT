@@ -1,7 +1,8 @@
 const Comment = function (comment) {
   this.id = comment.id;
-  this.date = comment.date;
-  this.content = comment.content;
+  this.date = new Date();
+  this.userId = comment.userId;
+  this.comment = comment.comment;
 };
 
 module.exports = Comment;

@@ -1,51 +1,55 @@
 <template>
   <!-- Post something -->
   <form>
-    <div class="d-flex flex-column mb-3">
+    <div class="d-flex mb-3">
       <div
-        class="card-footer py-2 mx-auto mt-3 border-0 w-50 shadow-3"
+        class="card-footer d-flex flex-column w-50 py-2 mx-auto mt-3 border-0 shadow-5"
         style="background-color: #fff"
       >
-        <div class="d-flex flex-center w-100">
-          <img
-            class="rounded-circle shadow-1-strong me-3"
-            src="@/assets/pp.png"
-            alt="avatar"
-            width="60"
-            height="60"
-          />
-          <div class="form-outline w-100 h-75">
-            <textarea
-              class="form-control border border-1"
-              id="textAreaExample"
-              rows="6"
-              v-model="text"
-              placeholder="Share something with us..."
-            ></textarea>
-            <label
-              class="form-label"
-              placeholder="Share something with us..."
-              for="textAreaExample"
-            ></label>
-          </div>
+        <div class="form-outline d-sm-md-lg-flex flex-sm-md-lg-row w-100 h-75">
+          <textarea
+            class="form-control border border-1"
+            id="textAreaExample"
+            rows="6"
+            v-model="text"
+            placeholder="Share something with us..."
+          ></textarea>
+          <label class="form-label" for="textAreaExample"></label>
         </div>
-        <div class="float-end mt-2 pt-1">
-          <!--fileinput -->
-          <input
-            @change="onFileSelect"
-            type="file"
-            id="postImage"
-            name="postImage"
-            accept="image/png, image/jpeg"
-          />
 
-          <button
-            type="submit"
-            class="btn btn-light"
-            @click.prevent="createPost()"
+        <div
+          class="d-flex flex-md-row flex-sm-column justify-content-between mt-2 pt-1"
+        >
+          <div
+            class="input-group d-sm-md-lg-flex flex-md-lg-column flex-sm-column justify-content-end"
           >
-            <i class="far fa-paper-plane text-primary fa-lg"></i>
-          </button>
+            <label class="custom-file-upload"
+              >Upload image
+              <input
+                @change="onFileSelect"
+                type="file"
+                id="postImageInput "
+                name="postImage"
+                accept="image/png, image/jpeg"
+              />
+              <i
+                class="far fa-images text-dark fa-lg text-primary fa-lg"
+                title="Upload image"
+              ></i>
+            </label>
+
+            <button
+              title="Send post !"
+              type="submit"
+              class="post-btn btn btn-link border"
+              @click.prevent="createPost()"
+            >
+              Post
+            </button>
+          </div>
+          <!--fileinput -->
+
+          <!---->
         </div>
       </div>
     </div>
@@ -58,6 +62,7 @@ var moment = require("moment");
 
 export default {
   name: "PostExample",
+
   data() {
     return {
       text: "",
@@ -69,12 +74,13 @@ export default {
     onFileSelect(event) {
       this.image = event.target.files[0];
     },
+
     createPost() {
       let userData = new FormData();
       userData.append("text", this.text);
       userData.append("id", this.$store.state.user.userId);
       userData.append("image", this.image);
-
+      console.log(userData);
       axios
         .post("http://localhost:3000/post/create", userData, {
           headers: {
@@ -84,8 +90,8 @@ export default {
         })
         .then(
           (response) => console.log(response),
-          this.$router.go(),
-          this.$router.push("/allposts")
+          alert("Your post is successfully added ! "),
+          this.$router.go()
         )
         .catch((error) => console.log(error));
       this.text = "";
@@ -94,4 +100,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+</style>

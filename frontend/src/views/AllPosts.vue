@@ -2,107 +2,151 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <!-- Container wrapper -->
     <div class="container-fluid">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-mdb-toggle="collapse"
-        data-mdb-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <a class="navbar-brand mt-2 mt-lg-0" href="#">
+        <a class="navbar-brand mt-2 mt-lg-0">
           <img
-            src="../assets/logo.png"
-            height="50"
+            src="../assets/icon-left-font-monochrome-black.png"
+            height="70"
             alt="GRPLogo"
             loading="lazy"
           />
         </a>
-        <span>Welcome {{ user.firstName }} ! </span>
+        <span>Welcome !</span>
       </div>
       <div class="d-flex align-items-center">
-        <i class="fas fa-user-alt" @click="GoToProfil()"></i>
-        <MDBIcon icon="sign-out-alt" @click="deconnectAccount()" />
+        <i
+          class="fas fa-user-alt"
+          title="See your profile !"
+          @click="GoToProfil()"
+        ></i>
+        <MDBIcon
+          icon="sign-out-alt"
+          title="Logout ! "
+          @click="deconnectAccount()"
+        />
       </div>
     </div>
   </nav>
+  <div class="d-sm-md-lg-flex flex-sm-md-lg-center">
+    <h3>Make a post</h3>
+  </div>
+
   <Post />
   <!--All Posts-->
 
-  <div
-    class="bg-image hover-overlay ripple"
-    data-mdb-ripple-color="light"
-  ></div>
   <div class="card-body" v-for="post in allPosts" :key="post.id">
-    <div class="post mx-auto w-50 hover-shadow" style="width: 200px">
-      <div class="float-start ms-1 mt-1">
-        <img
-          src="@/assets/pp.png"
-          width="55"
-          class="rounded-circle text-left"
-        />
-      </div>
-      <h5 class="text card-title">{{ post.firstName }} {{ post.lastName }}</h5>
-      <p class="date card-title text-left">
-        Posted:
-        {{ moment(post.date).format("DD/MM/YYYY ") }}
-      </p>
-      <hr />
-
-      <p class="text card-text">
-        {{ post.text }}
-      </p>
-      <hr />
-      <!--Image post -->
-      <div class="mb-3" v-if="post.image">
-        <img
-          class="postImage"
-          :src="'http://localhost:3000' + post.image"
-          alt=""
-        />
-      </div>
-      <hr />
-      <button
-        type="button"
-        class="btn btn-danger float-end me-1 mb-3 btn-floating"
-        @click="deletePost(post.postId)"
-      >
-        <i class="fas fa-trash-alt fa-xs"></i>
-      </button>
-      <!--Comments-->
+    <div class="col-sm-7 mx-auto">
       <div
-        class="container comments d-flex flex-row mb-3 mt-3 justify-content-center"
+        class="post d-sm-md-flex w-100 justify-content-sm-md-center hover-shadow"
       >
-        <img
-          class="rounded-circle shadow-1-strong me-3"
-          src="@/assets/pp.png"
-          alt="avatar"
-          width="40"
-          height="40"
-        />
-        <input
-          type="text"
-          id="typeText"
-          placeholder="Add comment"
-          class="form-control w-50"
-        />
-        <label class="form-label" for="typeText">
-          <button
-            type="button"
-            class="btn btn-outline btn-rounded ms-1"
-            data-mdb-ripple-color="dark"
-          >
-            <i class="fas fa-comments text-dark"></i></button
-        ></label>
-      </div>
-      <!--Comments-->
-    </div>
+        <div class="d-sm-md-flex flex-row">
+          <div class="float-start ms-1 mt-1">
+            <img
+              @click="GoToProfil()"
+              src="@/assets/icon.svg"
+              width="55"
+              class="rounded-circle text-left"
+            />
+          </div>
+          <div class="d-flex flex-column">
+            <h5 class="text card-title">
+              {{ post.firstName }} {{ post.lastName }}
+            </h5>
+            <p class="date card-title text-left">
+              Posted:
+              {{ moment(post.date).format("DD/MM/YYYY ") }}
+            </p>
+          </div>
+        </div>
+        <div class="d-sm-md-flex">
+          <p class="text card-text ml-0 pb-3">
+            {{ post.text }}
+          </p>
+        </div>
+        <!--Image post -->
+        <div v-if="post.image">
+          <img
+            class="postImage"
+            :src="'http://localhost:3000' + post.image"
+            alt="post-image"
+          />
+        </div>
+        <div class="d-flex flex-row ms-1 mt-1">
+          <button class="btn btn-link btn-lg btn-floating">
+            <i class="far fa-heart fa-lg" title="Like post"></i>
+          </button>
+          <button class="btn btn-link btn-lg btn-floating">
+            <i class="fas fa-share fa-lg text-dark ps-1" title="Share post"></i>
+          </button>
+          <div v-if="post.id == user.userId || verifyIsAdmin">
+            <button
+              type="button"
+              class="btn btn-link btn-lg btn-floating"
+              @click="deletePost(post.postId)"
+            >
+              <i
+                class="fas fa-trash-alt img-fluid text-danger fa-lg"
+                title="Delete post?"
+              ></i>
+            </button>
+          </div>
 
-    <hr />
+          <button
+            @click="getAllComments(post.id)"
+            class="btn float-end btn-link btn-rounded ms-auto p-2"
+          >
+            <i
+              class="fas fa-angle-double-down text-dark fa-sm"
+              title="See all comments..."
+            ></i>
+          </button>
+          <button class="btn btn-link btn-rounded p-2" @click="HideComments()">
+            <i
+              class="fas fa-angle-double-up text-dark fa-sm"
+              title="Hide all comments..."
+            ></i>
+          </button>
+        </div>
+        <!--Comments-->
+        <Comments :idPost="post.id" />
+
+        <div
+          v-for="comment in post.comments"
+          :key="comment.id"
+          class="comment-text d-flex flex-row mt-2 ms-3 pt-3 h-25 justify-content-start"
+        >
+          <div class="d-flex flex-column">
+            <h5 class="text card-title">
+              {{ comment.firstName }}
+            </h5>
+            <p class="date card-title text-left">
+              Posted:
+              {{ moment(comment.date).format("DD/MM/YYYY") }}
+            </p>
+          </div>
+          <p
+            class="commentText rounded w-50 h-25 ms-2 pt-2 ps-1 shadow-1"
+            style="text-align: left"
+          >
+            {{ comment.comment }}
+          </p>
+          <label class="form-label" for="typeText">
+            <button
+              v-if="user.userId == comment.idUser || verifyIsAdmin"
+              type="button"
+              class="btn ms-1 btn-link btn-floating"
+              data-mdb-ripple-color="dark"
+              @click="deleteComment(comment.id)"
+            >
+              <i
+                class="far fa-trash-alt fa-lg"
+                title="Delete comment?"
+              ></i></button
+          ></label>
+        </div>
+        <!--Comments-->
+      </div>
+    </div>
   </div>
   <Footer />
   <!--All posts -->
@@ -113,12 +157,15 @@ import { MDBIcon } from "mdb-vue-ui-kit";
 import { mapState } from "vuex";
 import axios from "axios";
 import Post from "@/components/Post.vue";
+import Comments from "@/components/Comment.vue";
 var moment = require("moment");
+
 export default {
   name: "PostPage",
   components: {
     MDBIcon,
     Post,
+    Comments,
     Footer,
   },
   data() {
@@ -128,6 +175,8 @@ export default {
       date: "",
       image: "",
       allPosts: [],
+      allComments: [],
+      verifyIsAdmin: this.$store.state.user.isAdmin,
     };
   },
   computed: {
@@ -135,7 +184,6 @@ export default {
   },
 
   mounted() {
-    //Récupèrer toutes les publications
     axios
       .get("http://localhost:3000/post/all", {
         headers: {
@@ -150,6 +198,21 @@ export default {
       });
   },
   methods: {
+    getAllComments(idPost) {
+      axios
+        .get("http://localhost:3000/comment/" + idPost, {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          let post = this.allPosts.find((post) => post.id === idPost);
+          post.comments = response.data;
+        })
+
+        .catch((error) => console.log(error));
+    },
+
     deletePost(id) {
       if (confirm("Are you sure that you want to delete this post ?")) {
         axios
@@ -169,6 +232,25 @@ export default {
           });
       }
     },
+    deleteComment(id) {
+      if (confirm("Are you sure that you want to delete this comment ?")) {
+        axios
+          .delete("http://localhost:3000/comment/" + id, {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then(() => {
+            this.$router.go();
+
+            alert("Your comment is successfully deleted !");
+            this.$router.push("/allposts");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
     GoToBlog() {
       this.$router.push("/allposts");
     },
@@ -180,71 +262,64 @@ export default {
     GoToProfil() {
       this.$router.push("/profil");
     },
+    HideComments() {
+      this.$router.go();
+    },
   },
 };
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Abel&display=swap");
-.post {
-  border-radius: 25px;
+@import url("https://fonts.googleapis.com/css2?family=Abel&display=swap");
+
+h3 {
+  font-family: "Abel", sans-serif;
 }
 h5,
-.date,
 .text {
+  font-style: bold;
   padding-top: 10px;
-  margin-left: 20px;
+  margin-left: 5px;
   text-align: left;
   font-family: "Abel", sans-serif;
 }
 .date {
   font-size: 12px;
-  font-style: italic;
+  padding-top: 10px;
+  margin-left: 5px;
+  text-align: left;
 }
 .post {
-  border: none;
+  border-radius: 25px;
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  cursor: pointer;
 }
-
-.post:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background-color: #fff;
-  transform: scaleY(1);
-  transition: all 0.5s;
-  transform-origin: bottom;
-}
-
-.post:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background-color: #d14747;
-  transform: scaleY(0);
-  transition: all 0.5s;
-  transform-origin: bottom;
-}
-
-.post:hover::after {
-  transform: scaleY(1);
+.postImage {
+  width: 100%;
+  height: 650px;
 }
 .form-control {
   border-radius: 12px 12px 12px 0;
 }
-.postImage {
-  width: 70%;
-  height: 50%;
-}
+
 i {
   cursor: pointer;
+}
+.fa-user-alt {
+  padding-right: 10px;
+}
+.fa-heart {
+  color: red;
+}
+.fa-heart:hover {
+  cursor: pointer;
+  animation: heart 2s ease-out;
+  font-weight: bold;
+}
+@keyframes heart {
+  100% {
+    opacity: 1;
+  }
 }
 </style>

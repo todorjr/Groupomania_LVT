@@ -9,7 +9,7 @@ export default new Vuex.Store({
       lastName: "",
       email: "",
       description: "",
-      admin: false,
+      isAdmin: false,
     },
     changeOption: "",
   },
@@ -17,14 +17,14 @@ export default new Vuex.Store({
   mutations: {
     USER_INFOS(
       state,
-      [userId, firstName, lastName, email, description, admin]
+      [userId, firstName, lastName, email, description, isAdmin]
     ) {
       state.user.userId = userId;
       (state.user.firstName = firstName),
         (state.user.lastName = lastName),
         (state.user.email = email),
         (state.user.description = description),
-        (state.user.admin = admin);
+        (state.user.isAdmin = isAdmin);
     },
 
     modifOption(state, value) {
@@ -45,7 +45,7 @@ export default new Vuex.Store({
             response.data[0].lastName,
             response.data[0].email,
             response.data[0].description,
-            response.data[0].admin,
+            response.data[0].isAdmin,
           ]);
         })
         .catch((error) => {

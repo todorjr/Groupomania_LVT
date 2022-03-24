@@ -1,7 +1,11 @@
 <template>
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> |
+    <router-link to="/signup">Connect</router-link>
+  </div>
   <h1>Welcome ! <br />Feel free to connect to our social network !</h1>
   <form class="shadow-5" method="post" type="submit">
-    <!-- 2 column grid layout with text inputs for the first and last names -->
     <MDBRow class="mb-4">
       <MDBCol>
         <MDBInput
@@ -52,6 +56,7 @@
       id="password"
       v-model="userInfos.password"
       wrapperClass="mb-4"
+      title="Password must contain minimum 8 caracters and maximum 100 characters.One uppercase.One number inside.No space is allowed !"
     />
 
     <MDBInput
@@ -61,10 +66,12 @@
       id="confirm-password"
       v-model="confirmPassword"
       wrapperClass="mb-4"
+      title="Password must contain minimum 8 caracters and maximum 100 characters.One uppercase.One number inside.No space is allowed !"
     />
 
     <!-- Checkbox -->
     <MDBCheckbox
+      v-model="userInfos.admin"
       label="Remember me"
       id="form3SubscribeCheck"
       wrapperClass="d-flex justify-content-center mb-4"
@@ -74,7 +81,7 @@
     <MDBBtn
       color="primary"
       block
-      class="mb-4"
+      class="button mb-4"
       type="submit"
       @click.prevent="SignUp()"
     >
@@ -99,12 +106,13 @@
       <MDBBtn color="dark" floating class="mx-1">
         <MDBIcon iconStyle="fab" icon="github" />
       </MDBBtn>
-      <p class="small fw-bold mt-2 pt-1 mb-0">
-        You already have an account?
-        <MDBBtn color="danger" @click.prevent="GoToSignIn()" rounded
-          >Sign In</MDBBtn
-        >
-      </p>
+      <div
+        class="small fw-bold mt-2 pt-1 mb-0 d-flex flex-row justify-content-center"
+        @click.prevent="GoToSignIn()"
+      >
+        You already have an account ?
+        <p class="text-primary">SIGN IN</p>
+      </div>
     </div>
   </form>
 
@@ -143,16 +151,12 @@ export default {
         password: null,
         email: null,
         description: null,
+        isAdmin: null,
       },
       confirmPassword: null,
     };
   },
-  props: {
-    mode: {
-      type: String,
-      default: "connexion",
-    },
-  },
+
   methods: {
     SignUp() {
       const userData = {
@@ -161,14 +165,22 @@ export default {
         password: this.userInfos.password,
         email: this.userInfos.email,
         description: this.userInfos.description,
+        isAdmin: this.userInfos.isAdmin,
       };
 
       console.log(userData);
       const regexEmail =
         /^[a-z0-9!#$ %& '*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&' * +/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/g;
+
       if (
         this.userInfos.password === this.confirmPassword &&
-        regexEmail.test(this.userInfos.email)
+        regexEmail.test(this.userInfos.email) &&
+        this.userInfos.firstName !== null &&
+        this.userInfos.lastName !== null &&
+        this.userInfos.description !== null &&
+        this.userInfos.email !== null &&
+        this.userInfos.password !== null &&
+        this.userInfos.confirmPassword !== null
       ) {
         axios({
           method: "POST",
@@ -183,6 +195,10 @@ export default {
             this.$router.push("/signin");
           })
           .catch((error) => console.log(error));
+      } else {
+        alert(
+          "Please enter all necessary information to be able to create a new account..."
+        );
       }
     },
 

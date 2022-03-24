@@ -36,6 +36,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 //Routes des utilisateurs, articles et commentaires
 app.use("/user", userRoutes);
 app.use("/post", postRoutes);
-app.use("/comment", auth, commentRoutes);
+app.use("/comment", commentRoutes);
 
 module.exports = app;

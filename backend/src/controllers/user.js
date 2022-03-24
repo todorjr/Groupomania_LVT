@@ -2,13 +2,11 @@ const User = require("../models/User");
 const dbConnect = require("../../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const dotenv = require("dotenv").config();
 const fs = require("fs");
 
 exports.signup = (req, res, next) => {
   let sql = `SELECT * FROM 'users' WHERE email=?`;
   dbConnect.execute(sql, [req.body.email], function (err, result) {
-    console.log(result);
     if (!result) {
       bcrypt
         .hash(req.body.password, 10)
@@ -19,8 +17,9 @@ exports.signup = (req, res, next) => {
             email: req.body.email,
             password: hash,
             description: req.body.description,
+            isAdmin: "0",
           };
-          let sql = `INSERT INTO users (firstName, lastName, email, password,description) VALUES (?,?,?,?,?);`;
+          let sql = `INSERT INTO users (firstName, lastName, email, password,description,isAdmin) VALUES (?,?,?,?,?,?);`;
           dbConnect.execute(
             sql,
             [
@@ -29,6 +28,7 @@ exports.signup = (req, res, next) => {
               user.email,
               user.password,
               user.description,
+              user.isAdmin,
             ],
             function (err, result) {
               if (err) throw err;
@@ -86,14 +86,6 @@ exports.login = (req, res, next) => {
   }
 };
 
-exports.getOneUser = (req, res, next) => {
-  let sql = `SELECT * FROM users WHERE users.id=${req.body.userId};`;
-  dbConnect.query(sql, function (err, result) {
-    if (err) res.status(400).json({ err });
-    res.status(200).json(result);
-  });
-};
-
 exports.getAllUsers = (req, res, next) => {
   dbConnect.execute("SELECT * FROM users ", async (error, result) => {
     if (error) {
@@ -104,44 +96,10 @@ exports.getAllUsers = (req, res, next) => {
   });
 };
 
-exports.modifyPassword = (req, res, next) => {
-  if (req.body.password) {
-    let sql = `SELECT * FROM users WHERE id=?`;
-    dbConnect.execute(sql, [req.params.id], function (err, result) {
-      let user = new User();
-      bcrypt
-        .compare(req.body.oldPassword, user.password)
-        .then((valid) => {
-          if (!valid) {
-            return res.status(401).json({ error: " Password is incorrect !" });
-          } else {
-            bcrypt
-              .hash(req.body.password, 10)
-              .then((hash) => {
-                let sql = `UPDATE users
-                              SET password= ?
-                              WHERE id = ?;`;
-                dbConnect.execute(
-                  sql,
-                  [hash, req.params.id],
-                  function (err, result) {
-                    if (err) throw err;
-                    res.status(200).json({ message: "Password changed !" });
-                  }
-                );
-              })
-              .catch((error) => res.status(500).json({ error }));
-          }
-        })
-        .catch((error) =>
-          res.status(400).json({ message: "Error with authentification" })
-        );
-    });
-  }
-};
 exports.me = (req, res, next) => {
   try {
     const id = res.locals.userId;
+    console.log("me", id);
     dbConnect.query(
       "SELECT * FROM users WHERE id = ?",
       [id],
@@ -156,40 +114,12 @@ exports.me = (req, res, next) => {
       }
     );
   } catch {
-    throw new Error("user not allowed");
+    throw new Error("User is not allowed");
   }
 };
 
-// exports.modifyAccount = (req, res, next) => {
-//   if (req.body.nom != "") {
-//     let sql = `UPDATE users
-//               SET firstName= ?
-//               WHERE id = ?`;
-//     dbConnect.execute(
-//       sql,
-//       [req.body.firstName, req.params.id],
-//       function (err, result) {
-//         if (err) throw err;
-//       }
-//     );
-//   }
-//   if (req.body.lastName != "") {
-//     let sql = `UPDATE users
-//               SET lastName= ?
-//               WHERE id = ?;`;
-//     dbConnect.execute(
-//       sql,
-//       [req.body.lastName, req.params.id],
-//       function (err, result) {
-//         if (err) throw err;
-//       }
-//     );
-//   }
-//   res.status(200).json({ message: "Information user update" });
-// };
-
-exports.updateProfilDescription = (req, res, next) => {
-  const id = res.locals.userId;
+exports.updateDescription = (req, res, next) => {
+  const id = req.params.id;
   const newDescription = req.body.description;
   dbConnect.query(
     "UPDATE users SET description=? WHERE id=?",
@@ -197,41 +127,29 @@ exports.updateProfilDescription = (req, res, next) => {
     async (error, result) => {
       if (error) {
         throw new Error(error);
-      } else if (result.affectedRows < 1) {
-        throw new NotFoundError("this user does not exist");
       } else {
-        res.send("user updated");
+        res.send("User updated");
       }
     }
   );
 };
 
-exports.modifyProfilPicture = (req, res, next) => {
-  if (req.file) {
-    let sql = `SELECT * FROM users WHERE id = ?`;
-    dbConnect.execute(sql, [req.params.id], function (err, result) {
-      if (err) res.status(400).json({ err });
-      if (!result[0])
-        res.status(400).json({ message: "We can not find any ID in table..." });
-      else {
-        // IF USER HAS AN IMAGE,DELETE IT FROM FOLDER
-        if (User.imageUrl != "http://localhost:3000/images/profile/pp.png") {
-          const name = User.imageUrl.split("/images/profile/")[1];
-          fs.unlink(`images/profile/${name}`, () => {
-            if (err) console.log(err);
-            else console.log("Image changed !");
-          });
-        }
-        // GET DATA FROM USERS
-        let image = req.file
-          ? `${req.protocol}://${req.get("host")}/images/profile/${
-              req.file.filename
-            }`
-          : "";
+exports.updatePassword = (req, res, next) => {
+  const id = req.params.id;
+  const newPassword = req.body.newPassword;
+  dbConnect.query(
+    "UPDATE users SET password=? WHERE id=?",
+    [newPassword, id],
+    async (error, result) => {
+      if (error) {
+        throw new Error(error);
+      } else {
+        res.send("Password updated");
       }
-    });
-  }
+    }
+  );
 };
+
 exports.deleteUser = (req, res, next) => {
   const userToDeleteId = req.params.id;
 
@@ -242,7 +160,7 @@ exports.deleteUser = (req, res, next) => {
       if (error) {
         throw new Error(error);
       } else {
-        res.send("user deleted");
+        res.send("User deleted");
       }
     }
   );
