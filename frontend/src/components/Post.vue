@@ -1,59 +1,52 @@
 <template>
   <!-- Post something -->
-  <form>
-    <div class="d-flex mb-3">
-      <div
-        class="card-footer d-flex flex-column w-50 py-2 mx-auto mt-3 border-0 shadow-5"
-        style="background-color: #fff"
-      >
-        <div class="form-outline d-sm-md-lg-flex flex-sm-md-lg-row w-100 h-75">
-          <textarea
-            class="form-control border border-1"
-            id="textAreaExample"
-            rows="6"
-            v-model="text"
-            placeholder="Share something with us..."
-          ></textarea>
-          <label class="form-label" for="textAreaExample"></label>
-        </div>
 
-        <div
-          class="d-flex flex-md-row flex-sm-column justify-content-between mt-2 pt-1"
-        >
-          <div
-            class="input-group d-sm-md-lg-flex flex-md-lg-column flex-sm-column justify-content-end"
-          >
-            <label class="custom-file-upload"
-              >Upload image
-              <input
-                @change="onFileSelect"
-                type="file"
-                id="postImageInput "
-                name="postImage"
-                accept="image/png, image/jpeg"
-              />
-              <i
-                class="far fa-images text-dark fa-lg text-primary fa-lg"
-                title="Upload image"
-              ></i>
-            </label>
-
-            <button
-              title="Send post !"
-              type="submit"
-              class="post-btn btn btn-link border"
-              @click.prevent="createPost()"
-            >
-              Post
-            </button>
-          </div>
-          <!--fileinput -->
-
-          <!---->
-        </div>
-      </div>
+  <div
+    class="card-footer d-flex flex-column mx-auto mt-3 border-0 shadow-5"
+    style="background-color: #fff"
+  >
+    <div class="form-outline d-md-lg-flex flex-md-lg-row h-75">
+      <textarea
+        class="form-control border border-1"
+        id="textAreaExample"
+        rows="6"
+        v-model="text"
+        placeholder="Share something with us..."
+      ></textarea>
+      <label class="form-label" for="textAreaExample"></label>
     </div>
-  </form>
+
+    <div class="d-flex flex-md-row justify-content-between mt-2 pt-1">
+      <div class="input-group d-flex flex-column justify-content-center">
+        <label class="custom-file-upload"
+          >Upload image
+          <input
+            @change="onFileSelect"
+            type="file"
+            id="postImageInput "
+            name="postImage"
+            accept="image/png, image/jpeg"
+          />
+          <i
+            class="far fa-images text-dark fa-lg text-primary fa-lg"
+            title="Upload image"
+          ></i>
+        </label>
+
+        <button
+          title="Send post !"
+          type="submit"
+          class="post-btn btn btn-link border"
+          @click.prevent="createPost()"
+        >
+          Post
+        </button>
+      </div>
+      <!--fileinput -->
+
+      <!---->
+    </div>
+  </div>
 </template>
 
 <script>
@@ -101,6 +94,25 @@ export default {
 </script>
 
 <style>
+/*
+$desktop: 1200px;
+$laptop: 1024px;
+$tablet: 768px;
+$phone: 426px;
+*/
+@media (min-width: 280px) and (max-width: 465px) {
+  .custom-file-upload {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+  }
+  .card-footer {
+    width: 10%;
+  }
+}
+.card-footer {
+  width: 60%;
+}
 input[type="file"] {
   display: none;
 }

@@ -111,7 +111,7 @@
         @click.prevent="GoToSignIn()"
       >
         You already have an account ?
-        <p class="text-primary">SIGN IN</p>
+        <p class="small text-primary">SIGN IN</p>
       </div>
     </div>
   </form>
@@ -210,6 +210,13 @@ export default {
 </script>
 
 <style>
+@media (min-width: 320px) and (max-width: 465px) {
+  .small {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+  }
+}
 form {
   margin: auto;
   width: 60%;

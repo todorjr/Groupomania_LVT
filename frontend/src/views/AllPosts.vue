@@ -71,7 +71,7 @@
             alt="post-image"
           />
         </div>
-        <div class="d-flex flex-row ms-1 mt-1">
+        <div class="d-flex flex-row">
           <button class="btn btn-link btn-lg btn-floating">
             <i class="far fa-heart fa-lg" title="Like post"></i>
           </button>
@@ -297,7 +297,7 @@ h5,
 }
 .postImage {
   width: 100%;
-  height: 650px;
+  height: 500px;
 }
 .form-control {
   border-radius: 12px 12px 12px 0;

@@ -2,6 +2,7 @@ const dbConnect = require("../../config/db");
 const Comment = require("../models/comments");
 
 exports.createComment = (req, res, next) => {
+  // Create a comment
   const idUser = req.body.id;
   const idPost = req.body.idPost;
   const comment = req.body.comment;
@@ -27,6 +28,7 @@ exports.createComment = (req, res, next) => {
 };
 
 exports.getAllComments = (req, res, next) => {
+  //Get all comments
   const idPost = req.params.id;
   let sql = "SELECT * FROM comments WHERE idPost=?";
   dbConnect.query(sql, [idPost], function (err, result) {
@@ -36,6 +38,7 @@ exports.getAllComments = (req, res, next) => {
 };
 
 exports.deleteComment = (req, res, next) => {
+  //Delete a comment
   const commentId = req.params.id;
   dbConnect.query(
     "DELETE FROM comments WHERE id=?",

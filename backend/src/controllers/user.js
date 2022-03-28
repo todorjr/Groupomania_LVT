@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 
 exports.signup = (req, res, next) => {
+  // Creating new account
   let sql = `SELECT * FROM 'users' WHERE email=?`;
   dbConnect.execute(sql, [req.body.email], function (err, result) {
     if (!result) {
@@ -46,6 +47,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
+  //Login existing user
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -87,6 +89,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.getAllUsers = (req, res, next) => {
+  //Getting all users from database
   dbConnect.execute("SELECT * FROM users ", async (error, result) => {
     if (error) {
       throw new Error(error);
@@ -119,6 +122,7 @@ exports.me = (req, res, next) => {
 };
 
 exports.updateDescription = (req, res, next) => {
+  //Update user description
   const id = req.params.id;
   const newDescription = req.body.description;
   dbConnect.query(
@@ -135,6 +139,7 @@ exports.updateDescription = (req, res, next) => {
 };
 
 exports.updatePassword = (req, res, next) => {
+  //Update users password
   const id = req.params.id;
   const newPassword = req.body.newPassword;
   dbConnect.query(
@@ -151,10 +156,10 @@ exports.updatePassword = (req, res, next) => {
 };
 
 exports.deleteUser = (req, res, next) => {
+  //After user is deleted all his posts and comments are deleted
   const userToDeleteId = req.params.id;
-
   dbConnect.query(
-    "DELETE FROM users WHERE id=?",
+    "DELETE users,posts,comments FROM users INNER JOIN posts ON users.id = posts.idUser INNER JOIN comments ON users.id = comments.idUser WHERE users.id=?",
     [userToDeleteId],
     async (error, result) => {
       if (error) {

@@ -4,6 +4,7 @@ const fs = require("fs");
 
 // DEFINE USER INPUT
 exports.createPost = (req, res, next) => {
+  //Create a new post
   const idUser = req.body.id;
   const text = req.body.text;
   let image;
@@ -28,6 +29,7 @@ exports.createPost = (req, res, next) => {
 };
 
 exports.deletePost = (req, res, next) => {
+  //Deleting user post
   const postId = req.params.id;
   dbConnect.query(
     "DELETE FROM posts WHERE id=?",
@@ -44,6 +46,7 @@ exports.deletePost = (req, res, next) => {
 
 // ALL POSTS ON PAGE
 exports.getAllPosts = (req, res, next) => {
+  // Getting all users posts from database and placing them into Blog page
   let sql =
     "SELECT posts.id as postId, posts.*, users.* FROM posts INNER JOIN users ON users.id=posts.idUser ORDER BY posts.id DESC";
   dbConnect.execute(sql, function (err, result) {
