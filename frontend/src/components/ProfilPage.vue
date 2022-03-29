@@ -7,7 +7,7 @@
         <a class="navbar-brand mt-2 mt-lg-0">
           <img
             src="../assets/icon-left-font-monochrome-black.png"
-            height="70"
+            height="80"
             alt="GRPLogo"
             loading="lazy"
           />
