@@ -102,7 +102,6 @@ exports.getAllUsers = (req, res, next) => {
 exports.me = (req, res, next) => {
   try {
     const id = res.locals.userId;
-    console.log("me", id);
     dbConnect.query(
       "SELECT * FROM users WHERE id = ?",
       [id],
@@ -157,9 +156,10 @@ exports.updatePassword = (req, res, next) => {
 
 exports.deleteUser = (req, res, next) => {
   //After user is deleted all his posts and comments are deleted
+
   const userToDeleteId = req.params.id;
   dbConnect.query(
-    "DELETE users,posts,comments FROM users INNER JOIN posts ON users.id = posts.idUser INNER JOIN comments ON users.id = comments.idUser WHERE users.id=?",
+    "DELETE users,posts,comments FROM users INNER JOIN posts ON posts.idUser = users.id INNER JOIN comments ON comments.idUser = users.id WHERE users.id=?",
     [userToDeleteId],
     async (error, result) => {
       if (error) {
