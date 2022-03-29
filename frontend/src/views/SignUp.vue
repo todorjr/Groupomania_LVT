@@ -91,19 +91,19 @@
     <!-- Register buttons -->
     <div class="text-center">
       <p>or sign up with:</p>
-      <MDBBtn color="primary" floating class="mx-1">
+      <MDBBtn color="primary" floating>
         <MDBIcon iconStyle="fab" icon="facebook-f" />>
       </MDBBtn>
 
-      <MDBBtn color="danger" floating class="mx-1">
+      <MDBBtn color="danger" floating>
         <MDBIcon iconStyle="fab" icon="google" />
       </MDBBtn>
 
-      <MDBBtn color="info" floating class="mx-1">
+      <MDBBtn color="info" floating>
         <MDBIcon iconStyle="fab" icon="twitter" />
       </MDBBtn>
 
-      <MDBBtn color="dark" floating class="mx-1">
+      <MDBBtn color="dark" floating>
         <MDBIcon iconStyle="fab" icon="github" />
       </MDBBtn>
       <div
