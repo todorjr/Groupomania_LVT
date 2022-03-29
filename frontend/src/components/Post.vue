@@ -39,7 +39,7 @@
           class="post-btn btn btn-link border"
           @click.prevent="createPost()"
         >
-          Post
+          Send post
         </button>
       </div>
       <!--fileinput -->
