@@ -293,8 +293,8 @@ h5,
   border-radius: 25px;
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
 }
+
 .postImage {
   width: 100%;
   height: 500px;
