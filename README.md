@@ -2,11 +2,12 @@
 
 Projet 7 du parcours Web d'Openclassrooms .
 Création d'un réseau social d'entreprise 'Groupomania' .
-Création du backend et du frontend de l'application en utilisant le framework Vue.js.
+Création du backend et du frontend de l'application en utilisant le framework Vue.js .
+Utilisation d'un serveur Mamp pour base de données .
 
 # Installation
 
-1. Assurez-vous que Node.js soit bien installé sur votre ordinateur.
+1. Assurez-vous que Node.js soit bien installé sur votre ordinateur.( Node version 17.4.0 NPM version 8.4.1 )
 
 2. Créez un nouveau dossier et ouvrez votre éditeur de code à son emplacement
 
